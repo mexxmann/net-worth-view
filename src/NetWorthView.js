@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import "./NetWorthView.css";
-// Import React Table
+
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 
 class NetWorthView extends Component {
 
-  onAssetsCashChange(assetsCash) {
-      this.props.onAssetsCashChange(assetsCash);
+  onTableDataChange(tableName, data) {
+    this.props.onTableDataChange(tableName, data);
   }
+
 
   renderEditableCurrencyValue = cellInfo => {
     return (
@@ -19,16 +20,16 @@ class NetWorthView extends Component {
         contentEditable
         suppressContentEditableWarning
         onBlur={e => {
-          //TODO: consider not changing props!
-          let row = this.props.assetsCash[cellInfo.index];
-          if (row[cellInfo.column.id] !== e.target.innerHTML) {
-            row[cellInfo.column.id] = e.target.innerHTML;
-            this.onAssetsCashChange(this.props.assetsCash);
-          }
-        }}
-        dangerouslySetInnerHTML={{
-          __html: this.props.assetsCash[cellInfo.index][cellInfo.column.id]
-        }}
+        let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
+        let row = newData[cellInfo.index];
+        if (row[cellInfo.column.id] !== e.target.innerHTML) {
+          row[cellInfo.column.id] = e.target.innerHTML;
+          this.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+        }
+      }}
+       dangerouslySetInnerHTML={{
+         __html: cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]
+       }}
       />
       </div>
     );
@@ -36,12 +37,19 @@ class NetWorthView extends Component {
 
   render() {
     const { assetsCash } = this.props;
+    const { assetsLongTerm } = this.props;
 
     return (
       <div className="App">
         <div>
           <ReactTable
             data={assetsCash}
+            getTdProps={() => {
+                return {
+                  tablename: 'assetsCash',
+                  data: this.props.assetsCash,
+                };
+              }}
             columns={[
               {
                 Header: "Cash and Investments",
@@ -58,6 +66,33 @@ class NetWorthView extends Component {
               },
             ]}
             defaultPageSize={10}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+        <div>
+          <ReactTable
+            data={assetsLongTerm}
+            getTdProps={() => {
+                return {
+                  tablename: 'assetsLongTerm',
+                  data: this.props.assetsLongTerm,
+                };
+              }}
+            columns={[
+              {
+                Header: "Long Term Assets",
+                accessor: "name",
+              },
+              {
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
+                Cell: this.renderEditableCurrencyValue
+              },
+            ]}
             showPagination={false}
             className="-striped -highlight"
           />

@@ -7,9 +7,10 @@ class App extends Component {
 
     this.state = {
       assetsCash: [],
+      assetsLongTerm: [],
     };
 
-    this.onAssetsCashChange = this.onAssetsCashChange.bind(this);
+    this.onTableDataChange = this.onTableDataChange.bind(this);
   }
 
   componentDidMount() {
@@ -26,21 +27,37 @@ class App extends Component {
             interestRate: 5,
             value: 4000,
           }
+        ],
+        assetsLongTerm:
+        [
+          {
+            name: 'Primary Home',
+            interestRate: 1,
+            value: 4555000,
+          },
+          {
+            name: 'Second Home',
+            interestRate: 2,
+            value: 1564321,
+          }
         ]
     });
   }
 
-  onAssetsCashChange(assetsCash) {
-    this.setState({assetsCash});
-    console.log(assetsCash);
+  onTableDataChange(tableName, data) {
+    let newState = [];
+    newState[tableName] = data;
+    this.setState(newState);
   }
 
   render() {
     const assetsCash = this.state.assetsCash;
+    const assetsLongTerm = this.state.assetsLongTerm;
 
     return <NetWorthView
       assetsCash={assetsCash}
-      onAssetsCashChange={this.onAssetsCashChange}
+      assetsLongTerm={assetsLongTerm}
+      onTableDataChange={this.onTableDataChange}
     />;
   }
 }

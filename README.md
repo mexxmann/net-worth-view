@@ -9,3 +9,4 @@
 
 # Todos
 * Cell validation - numeric values only
+* Format cell values with , . separators
