@@ -7,52 +7,29 @@ import CurrencyInput from 'react-currency-input';
 
 class NetWorthView extends Component {
 
-  // onTableDataChange(tableName, data) {
-  //   this.props.onTableDataChange(tableName, data);
-  // }
-
   onCurrencyValueChange(floatValue, cellInfo) {
     let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
     let row = newData[cellInfo.index];
     if (row[cellInfo.column.id] !== floatValue) {
+      // console.log('Currency Value change - old val: ', row[cellInfo.column.id], ', new value: ', floatValue);
       row[cellInfo.column.id] = floatValue;
       this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
     }
   }
 
-  toCurrency(numberString) {
-    let number = parseFloat(numberString);
-    return number.toLocaleString('USD');
-  }
-
   renderEditableCurrencyValue = cellInfo => {
     return (
       <div>
-        {/* <span>$</span>
-        <span
-          style={{ backgroundColor: "#fafafa" }}
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={e => {
-            let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
-            let row = newData[cellInfo.index];
-            if (row[cellInfo.column.id] !== e.target.innerHTML) {
-              row[cellInfo.column.id] = e.target.innerHTML;
-              this.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
-            }
-          }}
-          dangerouslySetInnerHTML={{
-            __html: cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]
-          }}
-        /> */}
         <CurrencyInput
           prefix='$'
           value={cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]}
-          onChangeEvent={(event, maskedValue, floatValue) => {
-            this.onCurrencyValueChange(floatValue, cellInfo);
+          ref={input => {
+            if (input) {
+              input.theInput.ref = input;
+            }
           }}
-          onBlur={e => {
-            console.log('blur!!!', e.target.getFloatValue())
+          onBlur={(event) => {
+            this.onCurrencyValueChange(event.target.ref.state.value, cellInfo);
           }}
         />
       </div>

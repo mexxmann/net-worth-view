@@ -47,7 +47,9 @@ class App extends Component {
   onTableDataChange(tableName, data) {
     let newState = [];
     newState[tableName] = data;
-    this.setState(newState, () => {console.log('new state: ', this.state)});
+    this.setState(newState, () => {
+      // console.log('new state: ', this.state)
+    });
   }
 
   render() {
