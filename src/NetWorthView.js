@@ -3,11 +3,21 @@ import "./NetWorthView.css";
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import CurrencyInput from 'react-currency-input';
 
 class NetWorthView extends Component {
 
-  onTableDataChange(tableName, data) {
-    this.props.onTableDataChange(tableName, data);
+  // onTableDataChange(tableName, data) {
+  //   this.props.onTableDataChange(tableName, data);
+  // }
+
+  onCurrencyValueChange(floatValue, cellInfo) {
+    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
+    let row = newData[cellInfo.index];
+    if (row[cellInfo.column.id] !== floatValue) {
+      row[cellInfo.column.id] = floatValue;
+      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+    }
   }
 
   toCurrency(numberString) {
@@ -18,7 +28,7 @@ class NetWorthView extends Component {
   renderEditableCurrencyValue = cellInfo => {
     return (
       <div>
-        <span>$</span>
+        {/* <span>$</span>
         <span
           style={{ backgroundColor: "#fafafa" }}
           contentEditable
@@ -33,6 +43,16 @@ class NetWorthView extends Component {
           }}
           dangerouslySetInnerHTML={{
             __html: cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]
+          }}
+        /> */}
+        <CurrencyInput
+          prefix='$'
+          value={cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]}
+          onChangeEvent={(event, maskedValue, floatValue) => {
+            this.onCurrencyValueChange(floatValue, cellInfo);
+          }}
+          onBlur={e => {
+            console.log('blur!!!', e.target.getFloatValue())
           }}
         />
       </div>

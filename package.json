@@ -5,6 +5,7 @@
   "dependencies": {
     "hamoni-sync": "^0.2.1",
     "react": "^16.3.2",
+    "react-currency-input": "^1.3.6",
     "react-dom": "^16.3.2",
     "react-scripts": "1.1.4",
     "react-table": "^6.8.2"
