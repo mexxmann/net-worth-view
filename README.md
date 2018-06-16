@@ -8,5 +8,5 @@
 * Left the 'Other' table under Assets out since it was empty
 
 # Todos
-* Cell validation - numeric values only
-* Format cell values with , . separators
+* [x] Cell validation - numeric values only
+* [x] Format cell values with , . separators

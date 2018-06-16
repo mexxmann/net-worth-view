@@ -4,6 +4,7 @@ import "./NetWorthView.css";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import CurrencyInput from 'react-currency-input';
+import Currency from 'react-currency-formatter';
 
 class NetWorthView extends Component {
 
@@ -42,6 +43,15 @@ class NetWorthView extends Component {
 
     return (
       <div className="App">
+        <h1>Tracking your Net Worth</h1>
+        <div>
+          <span>Net Worth</span>
+          <Currency
+            quantity={45685}
+            currency="EUR"
+            locale="en_CA"
+          />
+        </div>
         <div>
           <ReactTable
             data={assetsCash}
