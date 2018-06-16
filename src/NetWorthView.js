@@ -65,11 +65,12 @@ class NetWorthView extends Component {
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
-            defaultPageSize={10}
+            minRows={0}
             showPagination={false}
             className="-striped -highlight"
           />
         </div>
+        <hr/>
         <div>
           <ReactTable
             data={assetsLongTerm}
@@ -93,6 +94,7 @@ class NetWorthView extends Component {
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
+            minRows={0}
             showPagination={false}
             className="-striped -highlight"
           />
