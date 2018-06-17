@@ -7,10 +7,7 @@ class NetWorthViewContainer extends Component {
 
     this.state = {
       assets: [],
-      assetsCash: [],
-      assetsLongTerm: [],
-      liabilitiesShortTerm: [],
-      liabilitiesLongTerm: [],
+      liabilities: [],
       netWorth: 0,
       totalAssets: 0,
       totalLiabilities: 0,
@@ -42,66 +39,36 @@ class NetWorthViewContainer extends Component {
           category: 'Long Term Assets',
         }
       },
-      assetsCash:
-        [
-          {
-            name: 'Chequing',
-            interestRate: 0,
-            value: 2000,
-          },
-          {
-            name: 'Savings for Taxes',
-            interestRate: 5,
-            value: 4000,
-          }
-        ],
-        assetsLongTerm:
-        [
-          {
-            name: 'Primary Home',
-            interestRate: 1,
-            value: 4555000,
-          },
-          {
-            name: 'Second Home',
-            interestRate: 2,
-            value: 1564321,
-          }
-        ],
-        liabilitiesShortTerm:
-        [
-          {
-            name: 'Credit Card 1',
-            monthlyPayment: 200,
-            interestRate: 50,
-            value: 4342,
-          },
-          {
-            name: 'Credit Card 2',
-            monthlyPayment: 150,
-            interestRate: 22,
-            value: 322,
-          }
-        ],
-        liabilitiesLongTerm:
-        [
-          {
-            name: 'Mortgage 1',
-            monthlyPayment: 2000,
-            interestRate: 2.6,
-            value: 250999,
-          },
-          {
-            name: 'Mortgage 2',
-            monthlyPayment: 3500,
-            interestRate: 5.4,
-            value: 622634,
-          }
-        ],
-        netWorth: 1292130,
-        totalAssets: 2200427,
-        totalLiabilities: 908297,
-        currency: 'USD',
+      liabilities: {
+        'Credit Card 1': {
+          monthlyPayment: 200,
+          interestRate: 50,
+          value: 4342,
+          category: 'Short Term Liabilities'
+        },
+        'Credit Card 2': {
+          monthlyPayment: 150,
+          interestRate: 22,
+          value: 322,
+          category: 'Short Term Liabilities'
+        },
+        'Mortgage 1': {
+          monthlyPayment: 2000,
+          interestRate: 2.6,
+          value: 250999,
+          category: 'Long Term Debt',
+        },
+        'Mortgage 2': {
+          monthlyPayment: 3500,
+          interestRate: 5.4,
+          value: 622634,
+          category: 'Long Term Debt',
+        }
+      },
+      netWorth: 1292130,
+      totalAssets: 2200427,
+      totalLiabilities: 908297,
+      currency: 'USD',
     });
   }
 
@@ -122,10 +89,7 @@ class NetWorthViewContainer extends Component {
   render() {
     return <NetWorthView
       assets={this.state.assets}
-      assetsCash={this.state.assetsCash}
-      assetsLongTerm={this.state.assetsLongTerm}
-      liabilitiesShortTerm={this.state.liabilitiesShortTerm}
-      liabilitiesLongTerm={this.state.liabilitiesLongTerm}
+      liabilities={this.state.liabilities}
       netWorth={this.state.netWorth}
       totalAssets={this.state.totalAssets}
       totalLiabilities={this.state.totalLiabilities}

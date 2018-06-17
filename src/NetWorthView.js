@@ -13,17 +13,21 @@ import Currency from 'react-currency-formatter';
  */
 class NetWorthView extends Component {
 
-  onCurrencyValueChange(floatValue, cellInfo) {
-    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
-    let row = newData[cellInfo.index];
-    if (row[cellInfo.column.id] !== floatValue) {
-      row[cellInfo.column.id] = floatValue;
-      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
-    }
-  }
-
   onCurrencySelectorChange(event) {
     this.props.onCurrencySelectorChange(event.target.value);
+  }
+
+  onCurrencyValueChange(floatValue, cellInfo) {
+    // Copy the original prop data to avoid mutating the prop
+    // TODO: Is there a more performant way of doing this?
+    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.originaldata));
+    let dataItem = newData[cellInfo.row.name];
+
+    // If the value actually changed, notify our listeners.
+    if (dataItem[cellInfo.column.id] !== floatValue) {
+      dataItem[cellInfo.column.id] = floatValue;
+      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+    }
   }
 
   renderEditableCurrencyValue = cellInfo => {
@@ -32,7 +36,7 @@ class NetWorthView extends Component {
         <CurrencyInput
           prefix={getSymbolForCurrency(this.props.currency)}
           className="editableValue"
-          value={cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]}
+          value={cellInfo.value}
           ref={input => {
             if (input) {
               input.theInput.ref = input;
@@ -46,64 +50,39 @@ class NetWorthView extends Component {
     );
   };
 
-  onCurrencyValueChange2(floatValue, cellInfo) {
-    // Copy the original prop data to avoid mutating the prop
-    // TODO: Is there a more performant way of doing this?
-    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.originaldata));
-    let dataItem = newData[cellInfo.row.name];
+  /**
+   * For a given balance sheet type (i.e. assets vs liabilities), renders a table per category.
+   * Examples of categories are "Cash and Investments", and "Short Term Liabilities"
+   * @param {*} balanceSheetType - 'assets' or 'liabilities'
+   * @param {*} balanceSheetData - the data
+   */
+  renderTablesForBalanceSheetType(balanceSheetType, balanceSheetData) {
 
-    // If the value actually changed, notify our listeners.
-    if (dataItem[cellInfo.column.id] !== floatValue) {
-      dataItem[cellInfo.column.id] = floatValue;
-      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
-    }
-  }
-
-  renderEditableCurrencyValue2 = cellInfo => {
-    return (
-      <div>
-        <CurrencyInput
-          prefix={getSymbolForCurrency(this.props.currency)}
-          className="editableValue"
-          value={cellInfo.value}
-          ref={input => {
-            if (input) {
-              input.theInput.ref = input;
-            }
-          }}
-          onBlur={(event) => {
-            this.onCurrencyValueChange2(event.target.ref.state.value, cellInfo);
-          }}
-        />
-      </div>
-    );
-  };
-
-  renderAssets() {
+    // First, sort the balance sheet items into separate categories for display.
     let categories = [];
-    let categorizedAssets = [];
-    for (let assetName in this.props.assets) {
-      let asset = Object.assign({}, this.props.assets[assetName]); // Copy object to avoid mutating prop
-      asset.name = assetName;
-      if (!categories.includes(asset.category)) {
-        categories.push(asset.category);
-        categorizedAssets[asset.category] = [];
+    let categorizedData = [];
+    for (let itemName in balanceSheetData) {
+      let dataItem = Object.assign({}, balanceSheetData[itemName]); // Copy object to avoid mutating prop
+      dataItem.name = itemName;
+      if (!categories.includes(dataItem.category)) {
+        categories.push(dataItem.category);
+        categorizedData[dataItem.category] = [];
       }
-      categorizedAssets[asset.category].push(asset);
+      categorizedData[dataItem.category].push(dataItem);
     }
 
+    // Render a table for each category
     let tables = [];
     let categoryCounter = 0;
     for (let category of categories) {
-      console.log('Category: ', category);
       tables.push(
         <div key={categoryCounter}>
           <ReactTable
-            data={categorizedAssets[category]}
+            data={categorizedData[category]}
             getTdProps={() => {
               return {
-                tablename: 'assets',
-                originaldata: this.props.assets,
+                tablename: balanceSheetType,
+                originaldata: balanceSheetData,
               };
             }}
             columns={[
@@ -118,7 +97,7 @@ class NetWorthView extends Component {
               },
               {
                 accessor: "value",
-                Cell: this.renderEditableCurrencyValue2
+                Cell: this.renderEditableCurrencyValue
               },
             ]}
             minRows={0}
@@ -158,64 +137,7 @@ class NetWorthView extends Component {
         <div>
           <h2 className="sectionHeading">Assets</h2>
         </div>
-        {this.renderAssets()}
-        <div>
-          <ReactTable
-            data={this.props.assetsCash}
-            getTdProps={() => {
-              return {
-                tablename: 'assetsCash',
-                data: this.props.assetsCash,
-              };
-            }}
-            columns={[
-              {
-                Header: "Cash and Investments",
-                accessor: "name",
-              },
-              {
-                Header: "Interest Rate",
-                accessor: "interestRate",
-                Cell: cell => <div>{cell.value}%</div>
-              },
-              {
-                accessor: "value",
-                Cell: this.renderEditableCurrencyValue
-              },
-            ]}
-            minRows={0}
-            showPagination={false}
-            className="-striped -highlight"
-          />
-        </div>
-        <div>
-          <ReactTable
-            data={this.props.assetsLongTerm}
-            getTdProps={() => {
-              return {
-                tablename: 'assetsLongTerm',
-                data: this.props.assetsLongTerm,
-              };
-            }}
-            columns={[
-              {
-                Header: "Long Term Assets",
-                accessor: "name",
-              },
-              {
-                accessor: "interestRate",
-                Cell: cell => <div>{cell.value}%</div>
-              },
-              {
-                accessor: "value",
-                Cell: this.renderEditableCurrencyValue,
-              },
-            ]}
-            minRows={0}
-            showPagination={false}
-            className="-striped -highlight"
-          />
-        </div>
+        {this.renderTablesForBalanceSheetType('assets', this.props.assets)}
         <div className="calculatedValue">
           <span>Total Assets</span>
           <Currency
@@ -228,86 +150,7 @@ class NetWorthView extends Component {
         <div>
           <h2 className="sectionHeading">Liabilities</h2>
         </div>
-        <div>
-          <ReactTable
-            data={this.props.liabilitiesShortTerm}
-            getTdProps={() => {
-              return {
-                tablename: 'liabilitiesShortTerm',
-                data: this.props.liabilitiesShortTerm,
-              };
-            }}
-            columns={[
-              {
-                Header: "Short Term Liabilities",
-                accessor: "name",
-              },
-              {
-                Header: 'Monthly Payment',
-                accessor: "monthlyPayment",
-                Cell: cell =>
-                  <div>
-                    <Currency
-                      quantity={cell.value}
-                      currency={this.props.currency}
-                      locale="en_CA"
-                    />
-                  </div>
-              },
-              {
-                Header: 'Interest Rate',
-                accessor: "interestRate",
-                Cell: cell => <div>{cell.value}%</div>
-              },
-              {
-                accessor: "value",
-                Cell: this.renderEditableCurrencyValue
-              },
-            ]}
-            minRows={0}
-            showPagination={false}
-            className="-striped -highlight"
-          />
-        </div>
-        <div>
-          <ReactTable
-            data={this.props.liabilitiesLongTerm}
-            getTdProps={() => {
-              return {
-                tablename: 'liabilitiesLongTerm',
-                data: this.props.liabilitiesLongTerm,
-              };
-            }}
-            columns={[
-              {
-                Header: "Long Term Debt",
-                accessor: "name",
-              },
-              {
-                accessor: "monthlyPayment",
-                Cell: cell =>
-                  <div>
-                    <Currency
-                      quantity={cell.value}
-                      currency={this.props.currency}
-                      locale="en_CA"
-                    />
-                  </div>
-              },
-              {
-                accessor: "interestRate",
-                Cell: cell => <div>{cell.value}%</div>
-              },
-              {
-                accessor: "value",
-                Cell: this.renderEditableCurrencyValue
-              },
-            ]}
-            minRows={0}
-            showPagination={false}
-            className="-striped -highlight"
-          />
-        </div>
+        {this.renderTablesForBalanceSheetType('liabilities', this.props.liabilities)}
         <div className="calculatedValue">
           <span>Total Liabilities</span>
           <Currency
