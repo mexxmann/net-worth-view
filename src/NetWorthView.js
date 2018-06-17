@@ -91,6 +91,19 @@ class NetWorthView extends Component {
                 accessor: "name",
               },
               {
+                Header: 'Monthly Payment',
+                accessor: "monthlyPayment",
+                show: balanceSheetType === 'liabilities',
+                Cell: cell =>
+                  <div>
+                    <Currency
+                      quantity={cell.value}
+                      currency={this.props.currency}
+                      locale="en_CA"
+                    />
+                  </div>
+              },
+              {
                 Header: categoryCounter === 0 ? "Interest Rate" : "",
                 accessor: "interestRate",
                 Cell: cell => <div>{cell.value}%</div>
