@@ -1,38 +1,42 @@
 import React, { Component } from "react";
 import "./NetWorthView.css";
+import getSymbolForCurrency from "./currencyMapper";
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import CurrencyInput from 'react-currency-input';
+import Currency from 'react-currency-formatter';
 
+/**
+ * This class takes care of displaying the Net Worth data to the user
+ * It contains view-related concerns only
+ */
 class NetWorthView extends Component {
 
-  onTableDataChange(tableName, data) {
-    this.props.onTableDataChange(tableName, data);
-  }
-
-  toCurrency(numberString) {
-    let number = parseFloat(numberString);
-    return number.toLocaleString('USD');
+  onCurrencyValueChange(floatValue, cellInfo) {
+    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
+    let row = newData[cellInfo.index];
+    if (row[cellInfo.column.id] !== floatValue) {
+      // console.log('Currency Value change - old val: ', row[cellInfo.column.id], ', new value: ', floatValue);
+      row[cellInfo.column.id] = floatValue;
+      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+    }
   }
 
   renderEditableCurrencyValue = cellInfo => {
     return (
       <div>
-        <span>$</span>
-        <span
-          style={{ backgroundColor: "#fafafa" }}
-          contentEditable
-          suppressContentEditableWarning
-          onBlur={e => {
-            let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
-            let row = newData[cellInfo.index];
-            if (row[cellInfo.column.id] !== e.target.innerHTML) {
-              row[cellInfo.column.id] = e.target.innerHTML;
-              this.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+        <CurrencyInput
+          prefix={getSymbolForCurrency(this.props.currency)}
+          className="editableValue"
+          value={cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]}
+          ref={input => {
+            if (input) {
+              input.theInput.ref = input;
             }
           }}
-          dangerouslySetInnerHTML={{
-            __html: cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]
+          onBlur={(event) => {
+            this.onCurrencyValueChange(event.target.ref.state.value, cellInfo);
           }}
         />
       </div>
@@ -40,14 +44,24 @@ class NetWorthView extends Component {
   };
 
   render() {
-    const { assetsCash } = this.props;
-    const { assetsLongTerm } = this.props;
-
     return (
       <div className="App">
+        <h1>Tracking your Net Worth</h1>
+        <div className="calculatedValue">
+          <span >Net Worth</span>
+          <Currency
+            quantity={this.props.netWorth}
+            currency={this.props.currency}
+            locale="en_CA"
+          />
+        </div>
+        <hr />
+        <div>
+          <h2 className="sectionHeading">Assets</h2>
+        </div>
         <div>
           <ReactTable
-            data={assetsCash}
+            data={this.props.assetsCash}
             getTdProps={() => {
               return {
                 tablename: 'assetsCash',
@@ -74,10 +88,9 @@ class NetWorthView extends Component {
             className="-striped -highlight"
           />
         </div>
-        <hr />
         <div>
           <ReactTable
-            data={assetsLongTerm}
+            data={this.props.assetsLongTerm}
             getTdProps={() => {
               return {
                 tablename: 'assetsLongTerm',
@@ -95,12 +108,112 @@ class NetWorthView extends Component {
               },
               {
                 accessor: "value",
+                Cell: this.renderEditableCurrencyValue,
+              },
+            ]}
+            minRows={0}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+        <div className="calculatedValue">
+          <span>Total Assets</span>
+          <Currency
+            quantity={this.props.totalAssets}
+            currency={this.props.currency}
+            locale="en_CA"
+          />
+        </div>
+        <hr />
+        <div>
+          <h2 className="sectionHeading">Liabilities</h2>
+        </div>
+        <div>
+          <ReactTable
+            data={this.props.liabilitiesShortTerm}
+            getTdProps={() => {
+              return {
+                tablename: 'liabilitiesShortTerm',
+                data: this.props.liabilitiesShortTerm,
+              };
+            }}
+            columns={[
+              {
+                Header: "Short Term Liabilities",
+                accessor: "name",
+              },
+              {
+                Header: 'Monthly Payment',
+                accessor: "monthlyPayment",
+                Cell: cell =>
+                  <div>
+                    <Currency
+                      quantity={cell.value}
+                      currency={this.props.currency}
+                      locale="en_CA"
+                    />
+                  </div>
+              },
+              {
+                Header: 'Interest Rate',
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
             minRows={0}
             showPagination={false}
             className="-striped -highlight"
+          />
+        </div>
+        <div>
+          <ReactTable
+            data={this.props.liabilitiesLongTerm}
+            getTdProps={() => {
+              return {
+                tablename: 'liabilitiesLongTerm',
+                data: this.props.liabilitiesLongTerm,
+              };
+            }}
+            columns={[
+              {
+                Header: "Long Term Debt",
+                accessor: "name",
+              },
+              {
+                accessor: "monthlyPayment",
+                Cell: cell =>
+                  <div>
+                    <Currency
+                      quantity={cell.value}
+                      currency={this.props.currency}
+                      locale="en_CA"
+                    />
+                  </div>
+              },
+              {
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
+                Cell: this.renderEditableCurrencyValue
+              },
+            ]}
+            minRows={0}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+        <div className="calculatedValue">
+          <span>Total Liabilities</span>
+          <Currency
+            quantity={this.props.totalLiabilities}
+            currency={this.props.currency}
+            locale="en_CA"
           />
         </div>
       </div>
