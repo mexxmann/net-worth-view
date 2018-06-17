@@ -17,10 +17,13 @@ class NetWorthView extends Component {
     let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.data));
     let row = newData[cellInfo.index];
     if (row[cellInfo.column.id] !== floatValue) {
-      // console.log('Currency Value change - old val: ', row[cellInfo.column.id], ', new value: ', floatValue);
       row[cellInfo.column.id] = floatValue;
       this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
     }
+  }
+
+  onCurrencySelectorChange(event) {
+    this.props.onCurrencySelectorChange(event.target.value);
   }
 
   renderEditableCurrencyValue = cellInfo => {
@@ -47,6 +50,16 @@ class NetWorthView extends Component {
     return (
       <div className="App">
         <h1>Tracking your Net Worth</h1>
+        <div>
+          <span >Select Currency: </span>
+          <select onChange={(event) => {
+            this.onCurrencySelectorChange(event)
+          }}>
+            <option value="USD">USD</option>
+            <option value="CAD">CAD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
         <div className="calculatedValue">
           <span >Net Worth</span>
           <Currency

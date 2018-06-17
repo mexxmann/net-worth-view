@@ -15,8 +15,6 @@ class NetWorthViewContainer extends Component {
       totalLiabilities: 0,
       currency: 'USD',
     };
-
-    this.onTableDataChange = this.onTableDataChange.bind(this);
   }
 
   componentDidMount() {
@@ -88,7 +86,13 @@ class NetWorthViewContainer extends Component {
     let newState = [];
     newState[tableName] = data;
     this.setState(newState, () => {
-      // console.log('new state: ', this.state)
+      console.log('Detected Table Data Change - new state: ', this.state)
+    });
+  }
+
+  onCurrencyChange(currency) {
+    this.setState({currency}, () => {
+      console.log('Detected Currency Change - new state: ', this.state)
     });
   }
 
@@ -102,7 +106,8 @@ class NetWorthViewContainer extends Component {
       totalAssets={this.state.totalAssets}
       totalLiabilities={this.state.totalLiabilities}
       currency={this.state.currency}
-      onTableDataChange={this.onTableDataChange}
+      onTableDataChange={this.onTableDataChange.bind(this)}
+      onCurrencySelectorChange={this.onCurrencyChange.bind(this)}
     />;
   }
 }
