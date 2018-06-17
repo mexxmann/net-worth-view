@@ -14,3 +14,7 @@
 * [x] Cell validation - numeric values only
 * [x] Format cell values with , . separators
 * [ ] change tdProps.tablename from string to derive from symbol name
+* [ ] add rest of data items
+* [ ] add rest of currencies
+* [ ] Input sanitization on API
+* [ ] Proper spacing and padding

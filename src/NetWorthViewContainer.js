@@ -16,68 +16,41 @@ class NetWorthViewContainer extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      assets: {
-        'Chequing': {
-          interestRate: 0,
-          value: 2000,
-          category: 'Cash and Investments'
-        },
-        'Savings for Taxes': {
-          interestRate: 5,
-          value: 4000,
-          category: 'Cash and Investments',
-        },
-        'Primary Home': {
-          interestRate: 1,
-          value: 4555000,
-          category: 'Long Term Assets',
-        },
-        'Second Home': {
-          interestRate: 2,
-          value: 1564321,
-          category: 'Long Term Assets',
-        }
-      },
-      liabilities: {
-        'Credit Card 1': {
-          monthlyPayment: 200,
-          interestRate: 50,
-          value: 4342,
-          category: 'Short Term Liabilities'
-        },
-        'Credit Card 2': {
-          monthlyPayment: 150,
-          interestRate: 22,
-          value: 322,
-          category: 'Short Term Liabilities'
-        },
-        'Mortgage 1': {
-          monthlyPayment: 2000,
-          interestRate: 2.6,
-          value: 250999,
-          category: 'Long Term Debt',
-        },
-        'Mortgage 2': {
-          monthlyPayment: 3500,
-          interestRate: 5.4,
-          value: 622634,
-          category: 'Long Term Debt',
-        }
-      },
-      netWorth: 1292130,
-      totalAssets: 2200427,
-      totalLiabilities: 908297,
-      currency: 'USD',
+
+    fetch('http://localhost:3001/api/networth/1', {
+      method: 'get',
+    }).then(response => {
+      return response.json();
+    }).then(netWorthModel => {
+      this.setState(netWorthModel, () => {
+        console.log('Finished setting INITIAL state from API - new state: ', this.state)
+      });
+    }).catch(e => {
+      console.log('### Failed to retrieve updated Net Worth from API: ', e);
     });
   }
 
   onTableDataChange(tableName, data) {
-    let newState = [];
-    newState[tableName] = data;
-    this.setState(newState, () => {
-      console.log('Detected Table Data Change - new state: ', this.state)
+    let partialState = {};
+    partialState[tableName] = data;
+    let newState = Object.assign({}, this.state, partialState);
+
+    fetch('http://localhost:3001/api/networth/1', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newState)
+    }).then(response => {
+      return response.json();
+    }).then(newNewState => {
+      this.setState(newNewState, () => {
+        console.log('Finished setting state that was returned from API - new state: ', this.state)
+      });
+    }).catch(e => {
+      console.log('### Failed to retrieve updated Net Worth from API: ', e);
     });
+
   }
 
   onCurrencyChange(currency) {
