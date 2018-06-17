@@ -61,7 +61,7 @@ class NetWorthView extends Component {
     // First, sort the balance sheet items into separate categories for display.
     let categories = [];
     let categorizedData = [];
-    for (let itemName in balanceSheetData) {
+    Object.keys(balanceSheetData).forEach(itemName => {
       let dataItem = Object.assign({}, balanceSheetData[itemName]); // Copy object to avoid mutating prop
       dataItem.name = itemName;
       if (!categories.includes(dataItem.category)) {
@@ -69,7 +69,7 @@ class NetWorthView extends Component {
         categorizedData[dataItem.category] = [];
       }
       categorizedData[dataItem.category].push(dataItem);
-    }
+    });
 
     // Render a table for each category
     let tables = [];
