@@ -46,6 +46,92 @@ class NetWorthView extends Component {
     );
   };
 
+  onCurrencyValueChange2(floatValue, cellInfo) {
+    // Copy the original prop data to avoid mutating the prop
+    // TODO: Is there a more performant way of doing this?
+    let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.originaldata));
+    let dataItem = newData[cellInfo.row.name];
+
+    // If the value actually changed, notify our listeners.
+    if (dataItem[cellInfo.column.id] !== floatValue) {
+      dataItem[cellInfo.column.id] = floatValue;
+      this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
+    }
+  }
+
+  renderEditableCurrencyValue2 = cellInfo => {
+    return (
+      <div>
+        <CurrencyInput
+          prefix={getSymbolForCurrency(this.props.currency)}
+          className="editableValue"
+          value={cellInfo.value}
+          ref={input => {
+            if (input) {
+              input.theInput.ref = input;
+            }
+          }}
+          onBlur={(event) => {
+            this.onCurrencyValueChange2(event.target.ref.state.value, cellInfo);
+          }}
+        />
+      </div>
+    );
+  };
+
+  renderAssets() {
+    let categories = [];
+    let categorizedAssets = [];
+    for (let assetName in this.props.assets) {
+      let asset = Object.assign({}, this.props.assets[assetName]); // Copy object to avoid mutating prop
+      asset.name = assetName;
+      if (!categories.includes(asset.category)) {
+        categories.push(asset.category);
+        categorizedAssets[asset.category] = [];
+      }
+      categorizedAssets[asset.category].push(asset);
+    }
+
+    let tables = [];
+    let categoryCounter = 0;
+    for (let category of categories) {
+      console.log('Category: ', category);
+      tables.push(
+        <div key={categoryCounter}>
+          <ReactTable
+            data={categorizedAssets[category]}
+            getTdProps={() => {
+              return {
+                tablename: 'assets',
+                originaldata: this.props.assets,
+              };
+            }}
+            columns={[
+              {
+                Header: category,
+                accessor: "name",
+              },
+              {
+                Header: categoryCounter === 0 ? "Interest Rate" : "",
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
+                Cell: this.renderEditableCurrencyValue2
+              },
+            ]}
+            minRows={0}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+      );
+      categoryCounter++;
+    }
+    return tables;
+  }
+
   render() {
     return (
       <div className="App">
@@ -72,6 +158,7 @@ class NetWorthView extends Component {
         <div>
           <h2 className="sectionHeading">Assets</h2>
         </div>
+        {this.renderAssets()}
         <div>
           <ReactTable
             data={this.props.assetsCash}

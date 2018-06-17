@@ -6,6 +6,7 @@ class NetWorthViewContainer extends Component {
     super();
 
     this.state = {
+      assets: [],
       assetsCash: [],
       assetsLongTerm: [],
       liabilitiesShortTerm: [],
@@ -19,6 +20,28 @@ class NetWorthViewContainer extends Component {
 
   componentDidMount() {
     this.setState({
+      assets: {
+        'Chequing': {
+          interestRate: 0,
+          value: 2000,
+          category: 'Cash and Investments'
+        },
+        'Savings for Taxes': {
+          interestRate: 5,
+          value: 4000,
+          category: 'Cash and Investments',
+        },
+        'Primary Home': {
+          interestRate: 1,
+          value: 4555000,
+          category: 'Long Term Assets',
+        },
+        'Second Home': {
+          interestRate: 2,
+          value: 1564321,
+          category: 'Long Term Assets',
+        }
+      },
       assetsCash:
         [
           {
@@ -98,6 +121,7 @@ class NetWorthViewContainer extends Component {
 
   render() {
     return <NetWorthView
+      assets={this.state.assets}
       assetsCash={this.state.assetsCash}
       assetsLongTerm={this.state.assetsLongTerm}
       liabilitiesShortTerm={this.state.liabilitiesShortTerm}
