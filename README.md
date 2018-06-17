@@ -10,3 +10,4 @@
 # Todos
 * [x] Cell validation - numeric values only
 * [x] Format cell values with , . separators
+* [ ] change tdProps.tablename from string to derive from symbol name

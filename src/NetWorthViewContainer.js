@@ -8,6 +8,12 @@ class NetWorthViewContainer extends Component {
     this.state = {
       assetsCash: [],
       assetsLongTerm: [],
+      liabilitiesShortTerm: [],
+      liabilitiesLongTerm: [],
+      netWorth: 0,
+      totalAssets: 0,
+      totalLiabilities: 0,
+      currency: 'USD',
     };
 
     this.onTableDataChange = this.onTableDataChange.bind(this);
@@ -40,7 +46,41 @@ class NetWorthViewContainer extends Component {
             interestRate: 2,
             value: 1564321,
           }
-        ]
+        ],
+        liabilitiesShortTerm:
+        [
+          {
+            name: 'Credit Card 1',
+            monthlyPayment: 200,
+            interestRate: 50,
+            value: 4342,
+          },
+          {
+            name: 'Credit Card 2',
+            monthlyPayment: 150,
+            interestRate: 22,
+            value: 322,
+          }
+        ],
+        liabilitiesLongTerm:
+        [
+          {
+            name: 'Mortgage 1',
+            monthlyPayment: 2000,
+            interestRate: 2.6,
+            value: 250999,
+          },
+          {
+            name: 'Mortgage 2',
+            monthlyPayment: 3500,
+            interestRate: 5.4,
+            value: 622634,
+          }
+        ],
+        netWorth: 1292130,
+        totalAssets: 2200427,
+        totalLiabilities: 908297,
+        currency: 'USD',
     });
   }
 
@@ -53,12 +93,15 @@ class NetWorthViewContainer extends Component {
   }
 
   render() {
-    const assetsCash = this.state.assetsCash;
-    const assetsLongTerm = this.state.assetsLongTerm;
-
     return <NetWorthView
-      assetsCash={assetsCash}
-      assetsLongTerm={assetsLongTerm}
+      assetsCash={this.state.assetsCash}
+      assetsLongTerm={this.state.assetsLongTerm}
+      liabilitiesShortTerm={this.state.liabilitiesShortTerm}
+      liabilitiesLongTerm={this.state.liabilitiesLongTerm}
+      netWorth={this.state.netWorth}
+      totalAssets={this.state.totalAssets}
+      totalLiabilities={this.state.totalLiabilities}
+      currency={this.state.currency}
       onTableDataChange={this.onTableDataChange}
     />;
   }

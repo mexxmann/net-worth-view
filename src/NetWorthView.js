@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import "./NetWorthView.css";
+import getSymbolForCurrency from "./currencyMapper";
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import CurrencyInput from 'react-currency-input';
 import Currency from 'react-currency-formatter';
 
+/**
+ * This class takes care of displaying the Net Worth data to the user
+ * It contains view-related concerns only
+ */
 class NetWorthView extends Component {
 
   onCurrencyValueChange(floatValue, cellInfo) {
@@ -22,7 +27,8 @@ class NetWorthView extends Component {
     return (
       <div>
         <CurrencyInput
-          prefix='$'
+          prefix={getSymbolForCurrency(this.props.currency)}
+          className="editableValue"
           value={cellInfo.tdProps.rest.data[cellInfo.index][cellInfo.column.id]}
           ref={input => {
             if (input) {
@@ -38,23 +44,24 @@ class NetWorthView extends Component {
   };
 
   render() {
-    const { assetsCash } = this.props;
-    const { assetsLongTerm } = this.props;
-
     return (
       <div className="App">
         <h1>Tracking your Net Worth</h1>
-        <div>
-          <span>Net Worth</span>
+        <div className="calculatedValue">
+          <span >Net Worth</span>
           <Currency
-            quantity={45685}
-            currency="EUR"
+            quantity={this.props.netWorth}
+            currency={this.props.currency}
             locale="en_CA"
           />
         </div>
+        <hr />
+        <div>
+          <h2 className="sectionHeading">Assets</h2>
+        </div>
         <div>
           <ReactTable
-            data={assetsCash}
+            data={this.props.assetsCash}
             getTdProps={() => {
               return {
                 tablename: 'assetsCash',
@@ -81,10 +88,9 @@ class NetWorthView extends Component {
             className="-striped -highlight"
           />
         </div>
-        <hr />
         <div>
           <ReactTable
-            data={assetsLongTerm}
+            data={this.props.assetsLongTerm}
             getTdProps={() => {
               return {
                 tablename: 'assetsLongTerm',
@@ -102,12 +108,112 @@ class NetWorthView extends Component {
               },
               {
                 accessor: "value",
+                Cell: this.renderEditableCurrencyValue,
+              },
+            ]}
+            minRows={0}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+        <div className="calculatedValue">
+          <span>Total Assets</span>
+          <Currency
+            quantity={this.props.totalAssets}
+            currency={this.props.currency}
+            locale="en_CA"
+          />
+        </div>
+        <hr />
+        <div>
+          <h2 className="sectionHeading">Liabilities</h2>
+        </div>
+        <div>
+          <ReactTable
+            data={this.props.liabilitiesShortTerm}
+            getTdProps={() => {
+              return {
+                tablename: 'liabilitiesShortTerm',
+                data: this.props.liabilitiesShortTerm,
+              };
+            }}
+            columns={[
+              {
+                Header: "Short Term Liabilities",
+                accessor: "name",
+              },
+              {
+                Header: 'Monthly Payment',
+                accessor: "monthlyPayment",
+                Cell: cell =>
+                  <div>
+                    <Currency
+                      quantity={cell.value}
+                      currency={this.props.currency}
+                      locale="en_CA"
+                    />
+                  </div>
+              },
+              {
+                Header: 'Interest Rate',
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
             minRows={0}
             showPagination={false}
             className="-striped -highlight"
+          />
+        </div>
+        <div>
+          <ReactTable
+            data={this.props.liabilitiesLongTerm}
+            getTdProps={() => {
+              return {
+                tablename: 'liabilitiesLongTerm',
+                data: this.props.liabilitiesLongTerm,
+              };
+            }}
+            columns={[
+              {
+                Header: "Long Term Debt",
+                accessor: "name",
+              },
+              {
+                accessor: "monthlyPayment",
+                Cell: cell =>
+                  <div>
+                    <Currency
+                      quantity={cell.value}
+                      currency={this.props.currency}
+                      locale="en_CA"
+                    />
+                  </div>
+              },
+              {
+                accessor: "interestRate",
+                Cell: cell => <div>{cell.value}%</div>
+              },
+              {
+                accessor: "value",
+                Cell: this.renderEditableCurrencyValue
+              },
+            ]}
+            minRows={0}
+            showPagination={false}
+            className="-striped -highlight"
+          />
+        </div>
+        <div className="calculatedValue">
+          <span>Total Liabilities</span>
+          <Currency
+            quantity={this.props.totalLiabilities}
+            currency={this.props.currency}
+            locale="en_CA"
           />
         </div>
       </div>
