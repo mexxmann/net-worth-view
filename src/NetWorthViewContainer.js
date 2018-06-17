@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import NetWorthView from "./NetWorthView";
 
-class App extends Component {
+class NetWorthViewContainer extends Component {
   constructor() {
     super();
 
@@ -64,4 +64,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default NetWorthViewContainer;
