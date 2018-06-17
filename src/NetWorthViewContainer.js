@@ -30,33 +30,38 @@ class NetWorthViewContainer extends Component {
     });
   }
 
-  onTableDataChange(tableName, data) {
-    let partialState = {};
-    partialState[tableName] = data;
-    let newState = Object.assign({}, this.state, partialState);
-
-    fetch('http://localhost:3001/api/networth/1', {
+  getComputedOutputs(inputModel, currencyTo) {
+    let url = 'http://localhost:3001/api/networth/1';
+    if (currencyTo) {
+      url += `?currencyTo=${currencyTo}`;
+    }
+    fetch(url, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(newState)
+      body: JSON.stringify(inputModel)
     }).then(response => {
       return response.json();
-    }).then(newNewState => {
-      this.setState(newNewState, () => {
+    }).then(newState => {
+      this.setState(newState, () => {
         console.log('Finished setting state that was returned from API - new state: ', this.state)
       });
     }).catch(e => {
       console.log('### Failed to retrieve updated Net Worth from API: ', e);
     });
+  }
 
+  onTableDataChange(tableName, data) {
+    let partialState = {};
+    partialState[tableName] = data;
+    let newState = Object.assign({}, this.state, partialState);
+
+    this.getComputedOutputs(newState, null);
   }
 
   onCurrencyChange(currency) {
-    this.setState({currency}, () => {
-      console.log('Detected Currency Change - new state: ', this.state)
-    });
+    this.getComputedOutputs(this.state, currency);
   }
 
   render() {

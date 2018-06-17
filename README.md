@@ -16,5 +16,8 @@
 * [ ] change tdProps.tablename from string to derive from symbol name
 * [ ] add rest of data items
 * [ ] add rest of currencies
+* [ ] loading data message on initial load + when waiting for API
 * [ ] Input sanitization on API
 * [ ] Proper spacing and padding
+* [ ] Swagger API docs or mention it in presentation
+* [ ] JSON API format
