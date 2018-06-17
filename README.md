@@ -21,3 +21,5 @@
 * [ ] Proper spacing and padding
 * [ ] Swagger API docs or mention it in presentation
 * [ ] JSON API format
+* [ ] Consider using https://github.com/MikeMcl/decimal.js/ to minmize 
+floating precision errors
