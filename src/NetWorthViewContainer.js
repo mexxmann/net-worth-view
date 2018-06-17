@@ -23,8 +23,8 @@ class NetWorthViewContainer extends Component {
       method: 'get',
     }).then(response => {
       return response.json();
-    }).then(netWorthModel => {
-      this.setState(netWorthModel, () => {
+    }).then(jsonResult => {
+      this.setState(jsonResult.data, () => {
         console.log('Finished setting INITIAL state from API - new state: ', this.state)
       });
     }).catch(e => {
@@ -45,8 +45,8 @@ class NetWorthViewContainer extends Component {
       body: JSON.stringify(inputModel)
     }).then(response => {
       return response.json();
-    }).then(newState => {
-      this.setState(newState, () => {
+    }).then(jsonResult => {
+      this.setState(jsonResult.data, () => {
         console.log('Finished setting state that was returned from API - new state: ', this.state)
       });
     }).catch(e => {
