@@ -9,9 +9,9 @@ class NetWorthViewContainer extends Component {
       assets: [],
       liabilities: [],
       calculated: {
-        netWorth: 0,
-        totalAssets: 0,
-        totalLiabilities: 0,
+        netWorthBig: 0,
+        totalAssetsBig: 0,
+        totalLiabilitiesBig: 0,
         futureNetWorth: [],
       },
       currency: 'USD',
@@ -71,9 +71,9 @@ class NetWorthViewContainer extends Component {
     return <NetWorthView
       assets={this.state.assets}
       liabilities={this.state.liabilities}
-      netWorth={this.state.calculated.netWorth}
-      totalAssets={this.state.calculated.totalAssets}
-      totalLiabilities={this.state.calculated.totalLiabilities}
+      netWorthBig={this.state.calculated.netWorthBig}
+      totalAssetsBig={this.state.calculated.totalAssetsBig}
+      totalLiabilitiesBig={this.state.calculated.totalLiabilitiesBig}
       futureNetWorth={this.state.calculated.futureNetWorth}
       currency={this.state.currency}
       onTableDataChange={this.onTableDataChange.bind(this)}

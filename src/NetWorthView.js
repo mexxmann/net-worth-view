@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./NetWorthView.css";
-import getSymbolForCurrency from "./currencyMapper";
+import { getSymbolForCurrency, convertToBig } from "./util";
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
@@ -24,9 +24,12 @@ class NetWorthView extends Component {
     let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.originaldata));
     let dataItem = newData[cellInfo.row.name];
 
+    const floatValueBig = convertToBig(floatValue);
+    const originalValueBig = convertToBig(dataItem[cellInfo.column.id]);
+
     // If the value actually changed, notify our listeners.
-    if (dataItem[cellInfo.column.id] !== floatValue) {
-      dataItem[cellInfo.column.id] = floatValue;
+    if (floatValueBig.eq(originalValueBig) === false) {
+      dataItem[cellInfo.column.id] = floatValueBig;
       this.props.onTableDataChange(cellInfo.tdProps.rest.tablename, newData);
     }
   }
@@ -93,12 +96,12 @@ class NetWorthView extends Component {
               },
               {
                 Header: 'Monthly Payment',
-                accessor: "monthlyPayment",
+                accessor: "monthlyPaymentBig",
                 show: balanceSheetType === 'liabilities',
                 Cell: cell =>
                   <div>
                     <Currency
-                      quantity={cell.value}
+                      quantity={parseFloat(cell.value)}
                       currency={this.props.currency}
                       locale="en_CA"
                     />
@@ -106,11 +109,11 @@ class NetWorthView extends Component {
               },
               {
                 Header: categoryCounter === 0 ? "Interest Rate" : "",
-                accessor: "interestRate",
+                accessor: "interestRateBig",
                 Cell: cell => <div>{cell.value}%</div>
               },
               {
-                accessor: "value",
+                accessor: "valueBig",
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
@@ -128,10 +131,10 @@ class NetWorthView extends Component {
   renderFutureNetWorthChart(futureNetWorthArray) {
     const chartData = [];
     let year = (new Date()).getFullYear() + 1;
-    futureNetWorthArray.forEach((netWorthValue) => {
+    futureNetWorthArray.forEach((netWorthValueBig) => {
       chartData.push({
         x: year,
-        y: netWorthValue,
+        y: netWorthValueBig,
       });
       year += 1;
     });
@@ -140,7 +143,7 @@ class NetWorthView extends Component {
       <div>
         <BarChart
           axes
-          axisLabels={{y: 'Net Worth ($)'}}
+          axisLabels={{y: `Net Worth (${getSymbolForCurrency(this.props.currency)})`}}
           style={{ '.label': { fill: 'black' } }}
           width={800}
           margin={{top: 0, right: 0, bottom: 30, left: 100}}
@@ -167,7 +170,7 @@ class NetWorthView extends Component {
         <div className="calculatedValue">
           <span >Net Worth</span>
           <Currency
-            quantity={this.props.netWorth}
+            quantity={parseFloat(this.props.netWorthBig)}
             currency={this.props.currency}
             locale="en_CA"
           />
@@ -180,7 +183,7 @@ class NetWorthView extends Component {
         <div className="calculatedValue">
           <span>Total Assets</span>
           <Currency
-            quantity={this.props.totalAssets}
+            quantity={parseFloat(this.props.totalAssetsBig)}
             currency={this.props.currency}
             locale="en_CA"
           />
@@ -193,7 +196,7 @@ class NetWorthView extends Component {
         <div className="calculatedValue">
           <span>Total Liabilities</span>
           <Currency
-            quantity={this.props.totalLiabilities}
+            quantity={parseFloat(this.props.totalLiabilitiesBig)}
             currency={this.props.currency}
             locale="en_CA"
           />

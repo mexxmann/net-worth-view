@@ -17,6 +17,7 @@
 * [ ] change tdProps.tablename from string to derive from symbol name
 * [ ] add rest of data items
 * [ ] add rest of currencies
+* [ ] make interest rates editable
 * [ ] loading data message on initial load + when waiting for API
 * [x] Input sanitization on API
 * [ ] Proper spacing and padding
