@@ -11,6 +11,7 @@
 * Left the 'Other' table under Assets out since it was empty
 
 # Todos
+* [ ] Mobile layout
 * [x] Proper spacing and padding
 * [x] add rest of data items
 * [ ] add rest of currencies

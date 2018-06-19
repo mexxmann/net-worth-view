@@ -11,21 +11,31 @@
     font-weight: bold
 }
 
-.nwv-editable-value {
-    text-align: right
-}
-
 .nwv-section-heading {
     color: green;
     text-align: center;
 }
 
 .nwv-static-text-column {
-    text-align: left
+    text-align: left;
+}
+
+.nwv-percent-input {
+    text-align: right;
+    width: 50px
+}
+
+.nwv-currency-input {
+    text-align: right;
+    width: 100px
 }
 
 .nwv-middle-columns {
-    text-align: left
+    flex-basis: min-content
+}
+
+.nwv-middle-columns-header {
+    text-align: left;
 }
 
 .nwv-last-column {

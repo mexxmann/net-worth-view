@@ -83,7 +83,7 @@ class NetWorthView extends Component {
           onBlur={(event) => {
             this.onNumericInputChange(event.target.ref.state.value, cellInfo);
           }}
-          className='nwv-editable-value'
+          className='nwv-currency-input'
         />
       </div>
     );
@@ -109,7 +109,7 @@ class NetWorthView extends Component {
             }
             this.onNumericInputChange(val, cellInfo);
           }}
-          className='nwv-editable-value'
+          className='nwv-percent-input'
         />
       </div>
     );
@@ -160,24 +160,28 @@ class NetWorthView extends Component {
               {
                 Header: categoryCounter === 0 ? 'Monthly Payment' : '',
                 accessor: 'monthlyPaymentBig',
-                show: balanceSheetType === 'liabilities',
                 Cell: this.renderEditableCurrencyValue,
-                headerClassName: 'nwv-middle-columns'
+                headerClassName: 'nwv-middle-columns-header',
+                maxWidth: 150,
+                show: balanceSheetType === 'liabilities',
               },
               {
                 Header: '',
                 accessor: 'no-op',
-                show: balanceSheetType === 'assets'
+                maxWidth: 150,
+                show: balanceSheetType === 'assets',
               },
               {
                 Header: categoryCounter === 0 ? 'Interest Rate' : '',
                 accessor: 'interestRateBig',
                 Cell: this.renderEditablePercentageValue,
-                headerClassName: 'nwv-middle-columns'
+                maxWidth: 120,
+                headerClassName: 'nwv-middle-columns-header'
               },
               {
                 accessor: 'valueBig',
                 className: 'nwv-last-column',
+                maxWidth: 150,
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
