@@ -229,6 +229,8 @@ class NetWorthView extends Component {
             <option value='USD'>USD</option>
             <option value='CAD'>CAD</option>
             <option value='EUR'>EUR</option>
+            <option value='GBP'>GBP</option>
+            <option value='INR'>INR</option>
           </select>
         </div>
         {this.renderSummaryRow('Net Worth', this.props.netWorthBig)}

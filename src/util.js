@@ -5,6 +5,10 @@ function getSymbolForCurrency(currency) {
     return '$';
   } else if (currency === 'EUR') {
     return '€';
+  } else if (currency === 'GBP') {
+    return '£';
+  } else if (currency === 'INR') {
+    return '₹';
   }
   return '$';
 }
