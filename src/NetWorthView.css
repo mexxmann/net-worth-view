@@ -1,40 +1,37 @@
 .App {
-  text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.nwv-table {
+    padding-left: 10px;
+    padding-right: 20px
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.nwv-summary-table {
+    font-weight: bold
 }
 
-.App-title {
-  font-size: 1.5em;
+.nwv-editable-value {
+    text-align: right
 }
 
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.editableValue {
-    color: red;
-}
-
-.calculatedValue {
+.nwv-section-heading {
     color: green;
+    text-align: center;
 }
 
-.sectionHeading {
-    color: green;
+.nwv-static-text-column {
+    text-align: left
+}
+
+.nwv-middle-columns {
+    text-align: left
+}
+
+.nwv-last-column {
+    text-align: right
+}
+
+.nwv-select-currency-row {
+    text-align: right;
+    padding-right: 20px
 }

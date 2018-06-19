@@ -34,12 +34,45 @@ class NetWorthView extends Component {
     }
   }
 
+  renderReadOnlyCurrencyValue = cellInfo => {
+    return (
+      <Currency
+        quantity={parseFloat(cellInfo.value)}
+        currency={this.props.currency}
+        locale='en_CA'
+      />
+    );
+  }
+
+  renderSummaryRow(title, valueBig) {
+    return (
+      <ReactTable
+        data={[{ name: title, a: '', b: '', valueBig: valueBig }]}
+        columns={[
+          {
+            accessor: 'name',
+            className: 'nwv-static-text-column',
+          },
+          { Header: '', accessor: 'no-op', },
+          { Header: '', accessor: 'no-op', },
+          {
+            accessor: 'valueBig',
+            className: 'nwv-last-column',
+            Cell: this.renderReadOnlyCurrencyValue
+          },
+        ]}
+        minRows={0}
+        showPagination={false}
+        className='nwv-table nwv-summary-table'
+      />
+    );
+  }
+
   renderEditableCurrencyValue = cellInfo => {
     return (
       <div>
         <CurrencyInput
           prefix={getSymbolForCurrency(this.props.currency)}
-          className='editableValue'
           selectAllOnFocus
           value={cellInfo.value}
           ref={input => {
@@ -50,6 +83,7 @@ class NetWorthView extends Component {
           onBlur={(event) => {
             this.onNumericInputChange(event.target.ref.state.value, cellInfo);
           }}
+          className='nwv-editable-value'
         />
       </div>
     );
@@ -60,7 +94,6 @@ class NetWorthView extends Component {
       <div>
         <CurrencyInput
           suffix='%'
-          className='editableValue'
           selectAllOnFocus
           precision={0}
           value={cellInfo.value}
@@ -76,6 +109,7 @@ class NetWorthView extends Component {
             }
             this.onNumericInputChange(val, cellInfo);
           }}
+          className='nwv-editable-value'
         />
       </div>
     );
@@ -120,26 +154,36 @@ class NetWorthView extends Component {
               {
                 Header: category,
                 accessor: 'name',
+                className: 'nwv-static-text-column',
+                headerClassName: 'nwv-static-text-column'
               },
               {
-                Header: 'Monthly Payment',
+                Header: categoryCounter === 0 ? 'Monthly Payment' : '',
                 accessor: 'monthlyPaymentBig',
                 show: balanceSheetType === 'liabilities',
-                Cell: this.renderEditableCurrencyValue
+                Cell: this.renderEditableCurrencyValue,
+                headerClassName: 'nwv-middle-columns'
+              },
+              {
+                Header: '',
+                accessor: 'no-op',
+                show: balanceSheetType === 'assets'
               },
               {
                 Header: categoryCounter === 0 ? 'Interest Rate' : '',
                 accessor: 'interestRateBig',
-                Cell: this.renderEditablePercentageValue
+                Cell: this.renderEditablePercentageValue,
+                headerClassName: 'nwv-middle-columns'
               },
               {
                 accessor: 'valueBig',
+                className: 'nwv-last-column',
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
             minRows={0}
             showPagination={false}
-            className='-striped -highlight'
+            className='-striped -highlight nwv-table'
           />
         </div>
       );
@@ -177,8 +221,8 @@ class NetWorthView extends Component {
     return (
       <div className='App'>
         <h1>Tracking your Net Worth</h1>
-        <div>
-          <span >Select Currency: </span>
+        <div className='nwv-select-currency-row'>
+          <span>Select Currency: </span>
           <select onChange={(event) => {
             this.onCurrencySelectorChange(event)
           }}>
@@ -187,43 +231,22 @@ class NetWorthView extends Component {
             <option value='EUR'>EUR</option>
           </select>
         </div>
-        <div className='calculatedValue'>
-          <span >Net Worth</span>
-          <Currency
-            quantity={parseFloat(this.props.netWorthBig)}
-            currency={this.props.currency}
-            locale='en_CA'
-          />
-        </div>
+        {this.renderSummaryRow('Net Worth', this.props.netWorthBig)}
         <hr />
         <div>
-          <h2 className='sectionHeading'>Assets</h2>
+          <h2 className='nwv-section-heading'>Assets</h2>
         </div>
         {this.renderTablesForBalanceSheetType('assets', this.props.assets)}
-        <div className='calculatedValue'>
-          <span>Total Assets</span>
-          <Currency
-            quantity={parseFloat(this.props.totalAssetsBig)}
-            currency={this.props.currency}
-            locale='en_CA'
-          />
-        </div>
+        {this.renderSummaryRow('Total Assets', this.props.totalAssetsBig)}
         <hr />
         <div>
-          <h2 className='sectionHeading'>Liabilities</h2>
+          <h2 className='nwv-section-heading'>Liabilities</h2>
         </div>
         {this.renderTablesForBalanceSheetType('liabilities', this.props.liabilities)}
-        <div className='calculatedValue'>
-          <span>Total Liabilities</span>
-          <Currency
-            quantity={parseFloat(this.props.totalLiabilitiesBig)}
-            currency={this.props.currency}
-            locale='en_CA'
-          />
-        </div>
+        {this.renderSummaryRow('Total Liabilities', this.props.totalLiabilitiesBig)}
         <hr />
         <div>
-          <h2 className='sectionHeading'>Your Future Net Worth</h2>
+          <h2 className='nwv-section-heading'>Your Future Net Worth</h2>
         </div>
         <div>
           {this.renderFutureNetWorthChart(this.props.futureNetWorth)}

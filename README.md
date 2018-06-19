@@ -11,10 +11,12 @@
 * Left the 'Other' table under Assets out since it was empty
 
 # Todos
-* [ ] Proper spacing and padding
+* [x] Proper spacing and padding
 * [ ] add rest of data items
 * [ ] add rest of currencies
 * [ ] Converting currencies still leads to value changes
+* [ ] Chart axis range doesn't accommodate large min-max very well
+* [ ] chart doesn't have dynamic width
 * [ ] change tdProps.tablename from string to derive from symbol name
 * [ ] loading data message on initial load + when waiting for API
 * [ ] Swagger API docs or mention it in presentation
