@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import "./NetWorthView.css";
-import { getSymbolForCurrency, convertToBig } from "./util";
+import React, { Component } from 'react';
+import './NetWorthView.css';
+import { getSymbolForCurrency, convertToBig } from './util';
 
-import ReactTable from "react-table";
-import "react-table/react-table.css";
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 import CurrencyInput from 'react-currency-input';
 import Currency from 'react-currency-formatter';
 import { BarChart } from 'react-easy-chart';
@@ -18,7 +18,7 @@ class NetWorthView extends Component {
     this.props.onCurrencySelectorChange(event.target.value);
   }
 
-  onCurrencyValueChange(floatValue, cellInfo) {
+  onNumericInputChange(floatValue, cellInfo) {
     // Copy the original prop data to avoid mutating the prop
     // TODO: Is there a more performant way of doing this?
     let newData = JSON.parse(JSON.stringify(cellInfo.tdProps.rest.originaldata));
@@ -39,7 +39,8 @@ class NetWorthView extends Component {
       <div>
         <CurrencyInput
           prefix={getSymbolForCurrency(this.props.currency)}
-          className="editableValue"
+          className='editableValue'
+          selectAllOnFocus
           value={cellInfo.value}
           ref={input => {
             if (input) {
@@ -47,7 +48,33 @@ class NetWorthView extends Component {
             }
           }}
           onBlur={(event) => {
-            this.onCurrencyValueChange(event.target.ref.state.value, cellInfo);
+            this.onNumericInputChange(event.target.ref.state.value, cellInfo);
+          }}
+        />
+      </div>
+    );
+  };
+
+  renderEditablePercentageValue = cellInfo => {
+    return (
+      <div>
+        <CurrencyInput
+          suffix='%'
+          className='editableValue'
+          selectAllOnFocus
+          precision={0}
+          value={cellInfo.value}
+          ref={input => {
+            if (input) {
+              input.theInput.ref = input;
+            }
+          }}
+          onBlur={(event) => {
+            let val = event.target.ref.state.value;
+            if (val > 100) {
+              val = 100;
+            }
+            this.onNumericInputChange(val, cellInfo);
           }}
         />
       </div>
@@ -56,7 +83,7 @@ class NetWorthView extends Component {
 
   /**
    * For a given balance sheet type (i.e. assets vs liabilities), renders a table per category.
-   * Examples of categories are "Cash and Investments", and "Short Term Liabilities"
+   * Examples of categories are 'Cash and Investments', and 'Short Term Liabilities'
    * @param {*} balanceSheetType - 'assets' or 'liabilities'
    * @param {*} balanceSheetData - the data
    */
@@ -92,34 +119,27 @@ class NetWorthView extends Component {
             columns={[
               {
                 Header: category,
-                accessor: "name",
+                accessor: 'name',
               },
               {
                 Header: 'Monthly Payment',
-                accessor: "monthlyPaymentBig",
+                accessor: 'monthlyPaymentBig',
                 show: balanceSheetType === 'liabilities',
-                Cell: cell =>
-                  <div>
-                    <Currency
-                      quantity={parseFloat(cell.value)}
-                      currency={this.props.currency}
-                      locale="en_CA"
-                    />
-                  </div>
+                Cell: this.renderEditableCurrencyValue
               },
               {
-                Header: categoryCounter === 0 ? "Interest Rate" : "",
-                accessor: "interestRateBig",
-                Cell: cell => <div>{cell.value}%</div>
+                Header: categoryCounter === 0 ? 'Interest Rate' : '',
+                accessor: 'interestRateBig',
+                Cell: this.renderEditablePercentageValue
               },
               {
-                accessor: "valueBig",
+                accessor: 'valueBig',
                 Cell: this.renderEditableCurrencyValue
               },
             ]}
             minRows={0}
             showPagination={false}
-            className="-striped -highlight"
+            className='-striped -highlight'
           />
         </div>
       );
@@ -155,55 +175,55 @@ class NetWorthView extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className='App'>
         <h1>Tracking your Net Worth</h1>
         <div>
           <span >Select Currency: </span>
           <select onChange={(event) => {
             this.onCurrencySelectorChange(event)
           }}>
-            <option value="USD">USD</option>
-            <option value="CAD">CAD</option>
-            <option value="EUR">EUR</option>
+            <option value='USD'>USD</option>
+            <option value='CAD'>CAD</option>
+            <option value='EUR'>EUR</option>
           </select>
         </div>
-        <div className="calculatedValue">
+        <div className='calculatedValue'>
           <span >Net Worth</span>
           <Currency
             quantity={parseFloat(this.props.netWorthBig)}
             currency={this.props.currency}
-            locale="en_CA"
+            locale='en_CA'
           />
         </div>
         <hr />
         <div>
-          <h2 className="sectionHeading">Assets</h2>
+          <h2 className='sectionHeading'>Assets</h2>
         </div>
         {this.renderTablesForBalanceSheetType('assets', this.props.assets)}
-        <div className="calculatedValue">
+        <div className='calculatedValue'>
           <span>Total Assets</span>
           <Currency
             quantity={parseFloat(this.props.totalAssetsBig)}
             currency={this.props.currency}
-            locale="en_CA"
+            locale='en_CA'
           />
         </div>
         <hr />
         <div>
-          <h2 className="sectionHeading">Liabilities</h2>
+          <h2 className='sectionHeading'>Liabilities</h2>
         </div>
         {this.renderTablesForBalanceSheetType('liabilities', this.props.liabilities)}
-        <div className="calculatedValue">
+        <div className='calculatedValue'>
           <span>Total Liabilities</span>
           <Currency
             quantity={parseFloat(this.props.totalLiabilitiesBig)}
             currency={this.props.currency}
-            locale="en_CA"
+            locale='en_CA'
           />
         </div>
         <hr />
         <div>
-          <h2 className="sectionHeading">Your Future Net Worth</h2>
+          <h2 className='sectionHeading'>Your Future Net Worth</h2>
         </div>
         <div>
           {this.renderFutureNetWorthChart(this.props.futureNetWorth)}

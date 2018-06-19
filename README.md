@@ -11,15 +11,16 @@
 * Left the 'Other' table under Assets out since it was empty
 
 # Todos
-* [ ] Floating precision errors
-* [x] Cell validation - numeric values only
-* [x] Format cell values with , . separators
-* [ ] change tdProps.tablename from string to derive from symbol name
+* [ ] Proper spacing and padding
 * [ ] add rest of data items
 * [ ] add rest of currencies
-* [ ] make interest rates editable
+* [ ] Converting currencies still leads to value changes
+* [ ] change tdProps.tablename from string to derive from symbol name
 * [ ] loading data message on initial load + when waiting for API
-* [x] Input sanitization on API
-* [ ] Proper spacing and padding
 * [ ] Swagger API docs or mention it in presentation
+* [x] Cell validation - numeric values only
+* [x] Format cell values with , . separators
+* [x] make interest rates editable
+* [x] Input sanitization on API
 * [x] JSON API format
+* [x] Floating precision errors
