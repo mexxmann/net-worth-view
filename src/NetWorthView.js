@@ -6,6 +6,7 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import CurrencyInput from 'react-currency-input';
 import Currency from 'react-currency-formatter';
+import { BarChart } from 'react-easy-chart';
 
 /**
  * This class takes care of displaying the Net Worth data to the user
@@ -124,6 +125,31 @@ class NetWorthView extends Component {
     return tables;
   }
 
+  renderFutureNetWorthChart(futureNetWorthArray) {
+    const chartData = [];
+    let year = (new Date()).getFullYear() + 1;
+    futureNetWorthArray.forEach((netWorthValue) => {
+      chartData.push({
+        x: year,
+        y: netWorthValue,
+      });
+      year += 1;
+    });
+
+    return (
+      <div>
+        <BarChart
+          axes
+          axisLabels={{y: 'Net Worth ($)'}}
+          style={{ '.label': { fill: 'black' } }}
+          width={800}
+          margin={{top: 0, right: 0, bottom: 30, left: 100}}
+          data={chartData}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="App">
@@ -171,6 +197,13 @@ class NetWorthView extends Component {
             currency={this.props.currency}
             locale="en_CA"
           />
+        </div>
+        <hr />
+        <div>
+          <h2 className="sectionHeading">Your Future Net Worth</h2>
+        </div>
+        <div>
+          {this.renderFutureNetWorthChart(this.props.futureNetWorth)}
         </div>
       </div>
     );

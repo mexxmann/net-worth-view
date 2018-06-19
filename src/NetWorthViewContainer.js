@@ -12,6 +12,7 @@ class NetWorthViewContainer extends Component {
         netWorth: 0,
         totalAssets: 0,
         totalLiabilities: 0,
+        futureNetWorth: [],
       },
       currency: 'USD',
     };
@@ -73,6 +74,7 @@ class NetWorthViewContainer extends Component {
       netWorth={this.state.calculated.netWorth}
       totalAssets={this.state.calculated.totalAssets}
       totalLiabilities={this.state.calculated.totalLiabilities}
+      futureNetWorth={this.state.calculated.futureNetWorth}
       currency={this.state.currency}
       onTableDataChange={this.onTableDataChange.bind(this)}
       onCurrencySelectorChange={this.onCurrencyChange.bind(this)}

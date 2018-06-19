@@ -11,7 +11,7 @@
 * Left the 'Other' table under Assets out since it was empty
 
 # Todos
-* [ ] Consider using https://github.com/MikeMcl/decimal.js/ to minmize floating precision errors
+* [ ] Floating precision errors
 * [x] Cell validation - numeric values only
 * [x] Format cell values with , . separators
 * [ ] change tdProps.tablename from string to derive from symbol name
