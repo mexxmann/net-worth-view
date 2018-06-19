@@ -12,7 +12,7 @@
 
 # Todos
 * [x] Proper spacing and padding
-* [ ] add rest of data items
+* [x] add rest of data items
 * [ ] add rest of currencies
 * [ ] Converting currencies still leads to value changes
 * [ ] Chart axis range doesn't accommodate large min-max very well

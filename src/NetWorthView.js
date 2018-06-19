@@ -204,7 +204,7 @@ class NetWorthView extends Component {
     });
 
     return (
-      <div>
+      <div className='nwv-future-net-worth-chart'>
         <BarChart
           axes
           axisLabels={{y: `Net Worth (${getSymbolForCurrency(this.props.currency)})`}}
@@ -219,8 +219,8 @@ class NetWorthView extends Component {
 
   render() {
     return (
-      <div className='App'>
-        <h1>Tracking your Net Worth</h1>
+      <div>
+        <h1 className='nwv-title'>Tracking your Net Worth</h1>
         <div className='nwv-select-currency-row'>
           <span>Select Currency: </span>
           <select onChange={(event) => {
